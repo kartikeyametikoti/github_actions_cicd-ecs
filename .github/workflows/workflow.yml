@@ -51,7 +51,7 @@ jobs:
           TASK_DEF=$(cat $TASK_DEFINITION_FILE | jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI')
           echo "$TASK_DEF" > new-task-def.json
           echo "TASK_DEF_FILE=new-task-def.json" >> $GITHUB_ENV
-          cat new-task-def.json
+          cat $TASK_DEF_FILE
 
       - name: Register New Task Definition
         id: register-task
