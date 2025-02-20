@@ -44,7 +44,7 @@ jobs:
       - name: Push Docker Image to ECR
         run: |
           docker push $IMAGE_URI
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          docker push $IMAGE_URI:latest
 
       - name: Update ECS Task Definition
         run: |
