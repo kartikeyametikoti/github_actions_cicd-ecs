@@ -39,7 +39,7 @@ jobs:
           IMAGE_URI="869935092862.dkr.ecr.us-east-1.amazonaws.com/kartik-repo:$IMAGE_TAG"
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
           docker build -t $IMAGE_URI .
-          docker tag $IMAGE_URI ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          docker tag $IMAGE_URI $IMAGE_URI:latest
 
       - name: Push Docker Image to ECR
         run: |
