@@ -10,8 +10,7 @@ env:
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-  TASK_DEFINITION_FILE: ${{ secrets.TASK_DEFINITION_FILE }}
-
+  TASK_DEFINITION_FILE: .github/workflows/task-definition.json
 jobs:
   deploy:
     name: Build, Push & Deploy
