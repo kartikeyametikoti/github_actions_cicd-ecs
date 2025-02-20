@@ -35,10 +35,10 @@ jobs:
       - name: Build and Tag Docker Image
         run: |
           IMAGE_TAG=$(date +%s)
-          IMAGE_URI="869935092862.dkr.ecr.us-east-1.amazonaws.com/kartik-repo"
+          IMAGE_URI="869935092862.dkr.ecr.us-east-1.amazonaws.com/kartik-repo:$IMAGE_TAG"
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
           docker build -t $IMAGE_URI:$IMAGE_TAG .
-          docker tag $IMAGE_URI:$IMAGE_TAG $IMAGE_URI:latest
+          docker tag $IMAGE_URI $IMAGE_URI:latest
 
       - name: Push Docker Image to ECR
         run: |
@@ -47,7 +47,7 @@ jobs:
 
       - name: Update ECS Task Definition
         run: |
-          TASK_DEF=$(cat $TASK_DEFINITION_FILE | jq --arg IMAGE_URI "$IMAGE_URI:latest" '.containerDefinitions[0].image = $IMAGE_URI')
+          TASK_DEF=$(cat $TASK_DEFINITION_FILE | jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI')
           echo "$TASK_DEF" > new-task-def.json
           cat new-task-def.json
           echo "TASK_DEF_FILE=new-task-def.json" >> $GITHUB_ENV
