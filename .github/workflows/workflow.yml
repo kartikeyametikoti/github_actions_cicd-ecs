@@ -3,7 +3,7 @@ name: Deploy to AWS ECS
 on:
   push:
     branches:
-      - main  # Runs on pushes to the main branch
+      - main  # Runs on pushes to the  main branch
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -31,26 +31,28 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         run: |
-          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 869935092862.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build and Tag Docker Image
         run: |
           IMAGE_TAG=$(date +%s)
-          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG"
+          IMAGE_URI="869935092862.dkr.ecr.us-east-1.amazonaws.com/kartik-repo"
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
-          docker build -t $IMAGE_URI .
-          docker tag $IMAGE_URI ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          docker build -t $IMAGE_URI:$IMAGE_TAG .
+          docker tag $IMAGE_URI:$IMAGE_TAG $IMAGE_URI:latest
 
       - name: Push Docker Image to ECR
         run: |
           docker push $IMAGE_URI
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          docker push $IMAGE_URI:latest
 
       - name: Update ECS Task Definition
         run: |
-          TASK_DEF=$(cat $TASK_DEFINITION_FILE | jq --arg IMAGE_URI "$IMAGE_URI" '.containerDefinitions[0].image = $IMAGE_URI')
+          TASK_DEF=$(cat $TASK_DEFINITION_FILE | jq --arg IMAGE_URI "$IMAGE_URI:latest" '.containerDefinitions[0].image = $IMAGE_URI')
           echo "$TASK_DEF" > new-task-def.json
+          cat new-task-def.json
           echo "TASK_DEF_FILE=new-task-def.json" >> $GITHUB_ENV
+          cat $TASK_DEF_FILE
 
       - name: Register New Task Definition
         id: register-task
