@@ -36,7 +36,7 @@ jobs:
       - name: Build and Tag Docker Image
         run: |
           IMAGE_TAG=$(date +%s)
-          IMAGE_URI="869935092862.dkr.ecr.us-east-1.amazonaws.com/kartik-repo:$IMAGE_TAG"
+          IMAGE_URI="869935092862.dkr.ecr.us-east-1.amazonaws.com/kartik-repo"
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
           docker build -t $IMAGE_URI:$IMAGE_TAG .
           docker tag $IMAGE_URI:IMAGE_TAG $IMAGE_URI:latest
